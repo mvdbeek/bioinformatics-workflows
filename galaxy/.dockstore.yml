@@ -1,0 +1,7 @@
+version: 1.2
+workflows:
+- name: salmon-proof-of-concept
+  primaryDescriptorPath: /salmon-workflow.yml
+  subclass: Galaxy
+  testParameterFiles:
+  - /salmon-workflow-tests.yml

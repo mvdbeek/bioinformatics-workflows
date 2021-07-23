@@ -1,0 +1,157 @@
+class: GalaxyWorkflow
+doc: This workflow is a minimal example of a transcriptomics workflow in Galaxy
+label: Galaxy proof-of-concept (imported from uploaded file)
+creator:
+- class: Person
+  identifier: https://orcid.org/0000-0003-4470-5785
+  name: Laura Wratten
+- class: Person
+  identifier: https://orcid.org/0000-0003-4470-5785
+  name: Marius van den Beek
+license: MIT
+uuid: 05f65b7d-6a48-4fa0-b9f7-918138840907
+inputs:
+  pe-fastq:
+    collection_type: paired
+    doc: Paired End FASTQ Collection
+    format:
+    - fastq
+    - fastq.gz
+    optional: false
+    position:
+      left: 1261.9317626953125
+      top: 528.0255737304688
+    type: collection
+  transcript-fasta:
+    doc: Reference Transcript (fasta)
+    format:
+    - fasta
+    - fasta.gz
+    optional: false
+    position:
+      left: 1261.9317626953125
+      top: 915.0283813476562
+    type: data
+outputs:
+  FastQC html:
+    outputSource: fastqc/html_file
+  FastQC txt:
+    outputSource: fastqc/text_file
+  salmon transcript quantification:
+    outputSource: salmon/output_quant
+steps:
+  fastqc:
+    tool_shed_repository:
+      changeset_revision: e7b2202befea
+      name: fastqc
+      owner: devteam
+      tool_shed: toolshed.g2.bx.psu.edu
+    tool_id: toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72+galaxy1
+    tool_version: 0.72+galaxy1
+    doc: Quality Control using FastQC
+    position:
+      left: 1539.9857177734375
+      top: 523.9630737304688
+    tool_state:
+      adapters:
+        __class__: RuntimeValue
+      contaminants:
+        __class__: RuntimeValue
+      input_file:
+        __class__: ConnectedValue
+      kmers: '7'
+      limits:
+        __class__: RuntimeValue
+      min_length: null
+      nogroup: 'false'
+    in:
+      input_file:
+        source: pe-fastq
+  salmon:
+    tool_shed_repository:
+      changeset_revision: 49121db48873
+      name: salmon
+      owner: bgruening
+      tool_shed: toolshed.g2.bx.psu.edu
+    tool_id: toolshed.g2.bx.psu.edu/repos/bgruening/salmon/salmon/1.5.1+galaxy0
+    tool_version: 1.5.1+galaxy0
+    position:
+      left: 1559.928955078125
+      top: 806.4488525390625
+    tool_state:
+      adv:
+        biasSpeedSamp: '5'
+        bootstrapReproject: 'false'
+        dumpEq: 'false'
+        dumpEqWeights: 'false'
+        fldMax: '1000'
+        fldMean: '250'
+        fldSD: '25'
+        forgettingFactor: '0.65'
+        initUniform: 'false'
+        maxReadOcc: '100'
+        minAssignedFrags: null
+        noBiasLengthThreshold: 'false'
+        noEffectiveLengthCorrection: 'false'
+        noFragLengthDist: 'false'
+        noGammaDraw: 'false'
+        noLengthCorrection: 'false'
+        numAuxModelSamples: '5000000'
+        numBiasSamples: '2000000'
+        numBootstraps: '0'
+        numGibbsSamples: '0'
+        numPreAuxModelSamples: '5000'
+        perTranscriptPrior: 'false'
+        rangeFactorizationBins: '0'
+        sigDigits: '3'
+        skipQuant: 'false'
+        thinningFactor: '16'
+        useEM: 'false'
+        vbPrior: 1e-05
+        writeOrphanLinks: 'false'
+        writeUnmappedNames: 'false'
+      gcBias: 'false'
+      geneMap:
+        __class__: RuntimeValue
+      incompatPrior: '0.0'
+      meta: 'false'
+      quant_type:
+        __current_case__: 0
+        consensusSlack: '0'
+        consistentHits: 'false'
+        discardOrphansQuasi: 'false'
+        dovetail: 'false'
+        input:
+          single_or_paired:
+            __current_case__: 2
+            input_1:
+              __class__: ConnectedValue
+            libtype:
+              __current_case__: 0
+              strandedness: A
+            single_or_paired_opts: paired_collection
+        qtype: reads
+        quasiCoverage: null
+        recoverOrphans: 'false'
+        refTranscriptSource:
+          TranscriptSource: history
+          __current_case__: 1
+          s_index:
+            fasta:
+              __class__: ConnectedValue
+            kmer: '31'
+            phash: 'false'
+        type: quasi
+        validmap:
+          __current_case__: 1
+          validateMappings: 'false'
+        writeMappings: 'false'
+      seqBias: 'false'
+    in:
+      quant_type|input|single_or_paired|input_1:
+        source: pe-fastq
+      quant_type|refTranscriptSource|s_index|fasta:
+        source: transcript-fasta
+    out:
+      output_gene_quant:
+        hide: true
